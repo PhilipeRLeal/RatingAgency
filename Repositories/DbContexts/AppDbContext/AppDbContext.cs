@@ -1,7 +1,7 @@
 ﻿
 
 using Microsoft.EntityFrameworkCore;
-using Repositories.Entities;
+using Data.Entities;
 
 namespace Repositories.DbContexts.GenericDbContext
 {

@@ -1,10 +1,10 @@
 ﻿using Business_Layer;
-using System.Xml.Linq;
 
-namespace Repositories.Entities
+namespace Data.Entities
 {
     public class RateTypes: BaseEnum
     {
+
         public RateTypes(): base() { }
 
         public RateTypes(string name) : base(name)

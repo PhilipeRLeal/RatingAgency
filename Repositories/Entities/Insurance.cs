@@ -1,6 +1,6 @@
 ﻿
 
-namespace Repositories.Entities
+namespace Data.Entities
 {
     public class Insurance: BaseEntity
     {

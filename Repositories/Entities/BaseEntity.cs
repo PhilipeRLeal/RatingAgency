@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Repositories.Entities
+namespace Data.Entities
 {
     [PrimaryKey("Id")]
     public class BaseEntity : IBaseEntity

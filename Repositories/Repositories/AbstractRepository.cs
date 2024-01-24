@@ -1,8 +1,7 @@
-﻿
-
+﻿using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repositories.DbContexts.GenericDbContext;
-using Repositories.Entities;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace Repositories.Repositories
@@ -68,7 +67,13 @@ namespace Repositories.Repositories
         public virtual async Task Upsert(T element)
         {
             await Entities.AddAsync(element);
-            await Context.SaveChangesAsync();
+            try { 
+                await Context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         public virtual async Task Upsert(T[] elements)

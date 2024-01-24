@@ -21,7 +21,7 @@ namespace Repositories.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Repositories.Entities.Insurance", b =>
+            modelBuilder.Entity("Data.Entities.Insurance", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace Repositories.Migrations
                     b.ToTable("Insurances");
                 });
 
-            modelBuilder.Entity("Repositories.Entities.RateTypes", b =>
+            modelBuilder.Entity("Data.Entities.RateTypes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,7 @@ namespace Repositories.Migrations
                     b.ToTable("RateTypes");
                 });
 
-            modelBuilder.Entity("Repositories.Entities.Rating", b =>
+            modelBuilder.Entity("Data.Entities.Rating", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,9 +77,9 @@ namespace Repositories.Migrations
                     b.ToTable("Ratings");
                 });
 
-            modelBuilder.Entity("Repositories.Entities.Insurance", b =>
+            modelBuilder.Entity("Data.Entities.Insurance", b =>
                 {
-                    b.HasOne("Repositories.Entities.Rating", "Rate")
+                    b.HasOne("Data.Entities.Rating", "Rate")
                         .WithMany()
                         .HasForeignKey("RateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -88,9 +88,9 @@ namespace Repositories.Migrations
                     b.Navigation("Rate");
                 });
 
-            modelBuilder.Entity("Repositories.Entities.Rating", b =>
+            modelBuilder.Entity("Data.Entities.Rating", b =>
                 {
-                    b.HasOne("Repositories.Entities.RateTypes", "Rate")
+                    b.HasOne("Data.Entities.RateTypes", "Rate")
                         .WithMany()
                         .HasForeignKey("RateId")
                         .OnDelete(DeleteBehavior.Cascade)

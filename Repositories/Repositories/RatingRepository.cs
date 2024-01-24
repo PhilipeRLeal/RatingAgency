@@ -1,6 +1,6 @@
 ﻿
+using Data.Entities;
 using Repositories.DbContexts.GenericDbContext;
-using Repositories.Entities;
 
 namespace Repositories.Repositories
 {
@@ -14,7 +14,7 @@ namespace Repositories.Repositories
         
         public RatingRepository(AppDbContext context): base(context)
         {
-            Entities = Context.Ratings;
+            Entities = context.Ratings;
         }
 
     }

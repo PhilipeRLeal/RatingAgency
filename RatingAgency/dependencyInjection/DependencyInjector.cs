@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Business_Layer.Rules.ProposalManager;
+using Microsoft.Extensions.Logging;
 using Repositories.Repositories;
 
 namespace RatingAgency.dependencyInjection
@@ -9,9 +10,16 @@ namespace RatingAgency.dependencyInjection
         {
             InjectRepositories(builder);
 
+            InjectBusinessLayerTypes(builder);
+
             InjectLoger(builder);
 
             return builder;
+        }
+
+        private static void InjectBusinessLayerTypes(WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<IProposalManager, ProposalManager>();
         }
 
         private static void InjectLoger(WebApplicationBuilder builder)
