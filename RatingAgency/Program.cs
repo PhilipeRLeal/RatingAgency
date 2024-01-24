@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using RatingAgency.dependencyInjection;
 using Repositories.DbContexts.GenericDbContext;
+using Repositories.DbContexts.Initializer;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -15,6 +18,14 @@ builder = DependencyInjector.Inject(builder);
 
 
 var app = builder.Build();
+
+// Adding seed data.
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+    DBSeedProvider.Seed(context);
+}
 
 if (!app.Environment.IsDevelopment())
 {

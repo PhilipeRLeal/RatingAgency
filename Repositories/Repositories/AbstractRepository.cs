@@ -3,7 +3,6 @@
 using Microsoft.EntityFrameworkCore;
 using Repositories.DbContexts.GenericDbContext;
 using Repositories.Entities;
-using System.Data.Entity;
 using System.Linq.Expressions;
 
 namespace Repositories.Repositories
@@ -13,7 +12,7 @@ namespace Repositories.Repositories
 
         private readonly AppDbContext Context;
 
-        protected abstract Microsoft.EntityFrameworkCore.DbSet<T> Entities { get; init; }
+        protected abstract DbSet<T> Entities { get; init; }
 
 
         public AbstractRepository(AppDbContext context)

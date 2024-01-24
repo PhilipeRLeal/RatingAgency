@@ -2,7 +2,7 @@
 {
     public class Rating: BaseEntity
     {
-        public RateTypesEnum Rate { get; set; }
+        public RateTypes Rate { get; set; }
 
         public Rating() { }
 

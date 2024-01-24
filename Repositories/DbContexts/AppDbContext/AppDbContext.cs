@@ -17,16 +17,12 @@ namespace Repositories.DbContexts.GenericDbContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder
-            .Entity<RateTypes>()
-            .HasData(Enum.GetValues(typeof(RateTypesEnum))
-                .Cast<RateTypesEnum>()
-                .Select(e => new RateTypes
-                {
-                    Id = (short)e,
-                    Name = e.ToString()
-                })
-            );
+            //modelBuilder
+            //.Entity<RateTypes>()
+            //.HasData(Enum.GetValues(typeof(RateTypesEnum))
+            //    .Cast<RateTypesEnum>()
+            //    .Select(e => new RateTypes(e.ToString()))
+            //);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Business_Layer;
+using System.Xml.Linq;
 
 namespace Repositories.Entities
 {
-    public class RateTypes
+    public class RateTypes: BaseEnum
     {
-        public int Id { get; set; }
+        public RateTypes(): base() { }
 
-        public string Name { get; set; }
+        public RateTypes(string name) : base(name)
+        {
+            
+        }
     }
 }
