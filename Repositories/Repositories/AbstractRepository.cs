@@ -1,6 +1,7 @@
-﻿using Data.Entities;
+﻿
+using Data.DbContexts.AppDbContext;
+using Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using Repositories.DbContexts.GenericDbContext;
 using System.Diagnostics;
 using System.Linq.Expressions;
 

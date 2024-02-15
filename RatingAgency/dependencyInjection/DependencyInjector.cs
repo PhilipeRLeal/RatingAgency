@@ -1,5 +1,6 @@
 ﻿using Business_Layer.Rules.ProposalManager;
-using Microsoft.Extensions.Logging;
+using Data.DataBase.Identity;
+using Microsoft.AspNetCore.Identity;
 using Repositories.Repositories;
 
 namespace RatingAgency.dependencyInjection
@@ -10,11 +11,19 @@ namespace RatingAgency.dependencyInjection
         {
             InjectRepositories(builder);
 
+            InjectIdentityAndUserLayer(builder);
+
             InjectBusinessLayerTypes(builder);
 
             InjectLoger(builder);
 
             return builder;
+        }
+
+        private static void InjectIdentityAndUserLayer(WebApplicationBuilder builder)
+        {
+          
+            builder.Services.AddScoped<UserManager<CustomIdentityUser>, CustomUserManager>();
         }
 
         private static void InjectBusinessLayerTypes(WebApplicationBuilder builder)

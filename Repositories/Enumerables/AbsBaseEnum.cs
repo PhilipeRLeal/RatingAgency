@@ -1,23 +1,11 @@
-﻿using Data.DataBase.Initializer.appUsers.DefaultTypes;
-using Data.Entities;
-using System.Data;
+﻿using Data.Entities;
 using System.Reflection;
 
 namespace Business_Layer
 {
-    public abstract class BaseEnum : IBaseEnum
+    public abstract class AbsBaseEnum: IBaseEnum
     {
-
         public string Name { get; set; }
-
-        public BaseEnum()
-        {
-        }
-
-        public BaseEnum(string name)
-        {
-            Name = name;
-        }
 
         public IEnumerable<T> GetDefaultRoles<T>() where T : class
         {
@@ -33,6 +21,7 @@ namespace Business_Layer
                     yield return value;
                 }
             }
+
         }
     }
 }

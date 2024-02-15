@@ -19,7 +19,7 @@
 
             if (proposal.Client.ToLower().Contains("test"))
             { 
-                rating.Rate = new RateTypes("Medium");
+                rating.Rate = new RateEnumType("Medium");
             }
             return rating;
         }

@@ -5,16 +5,16 @@ using System.Reflection;
 
 namespace Business_Layer
 {
-    public abstract class BaseEnum : IBaseEnum
+    public class BaseEnumWithEntity : BaseEntity, IBaseEnum
     {
 
         public string Name { get; set; }
 
-        public BaseEnum()
+        public BaseEnumWithEntity()
         {
         }
 
-        public BaseEnum(string name)
+        public BaseEnumWithEntity(string name)
         {
             Name = name;
         }
@@ -33,6 +33,7 @@ namespace Business_Layer
                     yield return value;
                 }
             }
+
         }
     }
 }

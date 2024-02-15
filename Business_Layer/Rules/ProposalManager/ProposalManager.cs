@@ -1,6 +1,6 @@
 ﻿using Business_Layer.Rules.Rating.Factory;
+using Data.DbContexts.AppDbContext;
 using Data.Entities;
-using Repositories.DbContexts.GenericDbContext;
 using Repositories.Repositories;
 using System.Text.Json;
 using ViewModels.ViewModels;

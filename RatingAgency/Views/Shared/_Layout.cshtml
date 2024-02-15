@@ -8,42 +8,69 @@
     <title>@ViewBag.Title</title>
 </head>
 
+
+<script src="~/lib/jquery/jquery.js"></script>
+<script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="~/shared/_layout.js"></script>
+<link href="~/css/site.css" rel="stylesheet"></link>
+<link href="~/css/bootstrap.css" rel="stylesheet"></link>
+<base href="/" />
+
+<style>
+    .header {
+        background: #F00;
+        height: 100px;
+        position: relative;
+        top: 0;
+        width: 100%;
+        z-index: 10
+    }
+
+</style>
 <body>
     <div class="container">
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-primary" aria-label="Navigation Header">
-                <div class="container-xl">
+        <header class="navbar navbar-expand flex-column flex-md-row bd-navbar">
+            <nav class="navbar navbar-expand-lg fixed-top bg-primary" aria-label="Navigation Header">
+                <div class="navbar-collapse collapse w-100 order-1 order-md-0">
                     <a class="navbar-brand">
                         <img src="/Images/logo.png" width="151" height="auto" alt="app log" />
                     </a>
                     <div class="pagination">
-                        <ul class="breadcrumb">
-                            <li>
-                                <a class="" type="button" data-bs-toggle="collapse" asp-controller="Home" asp-action="Index">
+                        <ul class="breadcrumb navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" type="button" data-bs-toggle="collapse" asp-controller="Home" asp-action="Index">
                                     <span class="divider">Home</span>
                                 </a>
                             </li>
-                            <li>
-                                <a class="" type="button" data-bs-toggle="collapse" asp-controller="Proposal" asp-action="Index">
+                            <li class="nav-item">
+                                <a class="nav-link" type="btg" data-bs-toggle="collapse" asp-controller="Proposal" asp-action="Index">
                                     <span class="divider">Proposals</span>
                                 </a>
                             </li>
                         </ul>
                     </div>
+                    
                 </div>
+                <partial name="_LoginPartial" />
             </nav>
-
-
         </header>
-        @RenderBody()
+        <div class="container-fluid">
+            <div class="row flex-xl-nowrap">
+                <main class="me-auto">
+                    <content>
+                        
+                        <div>
+                            @RenderBody()
+        
+                            @RenderSection("Scripts", required:false)
+                        </div>
+                    </content>
+                </main>
+            </div>
+        </div>
     </div>
 
-    <script src="~/lib/jquery/jquery.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/shared/_layout.js"></script>
-    <link href="~/css/site.css" rel="stylesheet"></link>
-    <link href="~/css/bootstrap.css" rel="stylesheet"></link>
-    <base href="/" />
+   
 </body>
 </html>
 

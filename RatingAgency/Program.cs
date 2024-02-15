@@ -2,12 +2,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RatingAgency.dependencyInjection;
 using RatingAgency.Validators.ControllerValidators;
-using Repositories.DbContexts.GenericDbContext;
-using Repositories.DbContexts.Initializer;
+using Data.DbContexts.AppDbContext;
+using Data.DataBase.Initializer;
+using Data.DataBase.Identity;
+using Microsoft.AspNetCore.Identity;
+
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("AppDbContextConnection");
+
+if (connectionString is null) {
+    throw new InvalidOperationException("Connection string 'AppDbContextConnection' not found.");
+};
 
 builder.Services.AddControllersWithViews();
-
 
 
 
@@ -16,8 +24,32 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration["ConnectionStrings:DbContextConnection"]);
 });
 
+builder.Services.AddDefaultIdentity<CustomIdentityUser>(options => {
+    options.SignIn.RequireConfirmedAccount = false;
+
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = true;
+    options.User.RequireUniqueEmail = true;
+
+
+    })
+    .AddRoles<CustomIdentityRole>()
+    .AddRoleValidator<CustomRoleValidator>()
+    .AddRoleManager<CustomRoleManager>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSession();
+
 builder.Services.AddRazorPages();
+
 builder.Services.AddRazorComponents();
+
 builder.Services.Configure<MvcOptions>(x => x.Conventions.Add(new ModelStateValidatorConvension()));
 
 builder = DependencyInjector.Inject(builder);
@@ -25,15 +57,13 @@ builder = DependencyInjector.Inject(builder);
 
 var app = builder.Build();
 
-// Adding seed data.
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    
+// Through this scope, we can access the services that were inserted into the builder prior to
+// the application being effectively run
 
-    var context = services.GetRequiredService<AppDbContext>();
-    DBSeedProvider.Seed(context);
-}
+var dbServiceProvider = new DBSeedProvider(app);
+
+await dbServiceProvider.Seed();
+
 
 if (!app.Environment.IsDevelopment())
 {
@@ -42,19 +72,27 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 
 }
-app.UseStaticFiles();   
-// app.UseSession();
-app.MapRazorPages();
-app.UseHttpsRedirection();
+/*This middleware allows the solution to automatically include the static files like the bootstrap and css files.*/
 app.UseStaticFiles();
+// app.MapDefaultControllerRoute();
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
+
+app.UseHttpsRedirection();
+
 app.UseRouting();
+
+
+app.UseAuthentication();
+
 app.UseAuthorization();
 
-app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapRazorPages();
+
     endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action}");
 });
 

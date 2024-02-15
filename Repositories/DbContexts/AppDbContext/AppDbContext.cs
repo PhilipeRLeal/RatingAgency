@@ -1,34 +1,49 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
+﻿using Data.DataBase.Identity;
 using Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+namespace Data.DbContexts.AppDbContext;
 
-namespace Repositories.DbContexts.GenericDbContext
+public class AppDbContext : IdentityDbContext<CustomIdentityUser, 
+                                              CustomIdentityRole, 
+                                              int, 
+                                              CustomIdentityClaim, 
+                                              CustomIdentityUserRole,
+                                              CustomIdentityLogin, 
+                                              IdentityRoleClaim<int>, 
+                                              IdentityUserToken<int>
+                                              >
 {
-    public class AppDbContext : DbContext
+    
+    public AppDbContext(DbContextOptions options) : base(options)
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-        public DbSet<Insurance> Insurances { get; set; }
-
-        public DbSet<RateTypes> RateTypes { get; set; }
-
-        public DbSet<Rating> Ratings { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder
-            //.Entity<RateTypes>()
-            //.HasData(Enum.GetValues(typeof(RateTypesEnum))
-            //    .Cast<RateTypesEnum>()
-            //    .Select(e => new RateTypes(e.ToString()))
-            //);
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder
-                .UseSqlServer();
-        }
     }
+
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        
+
+
+        base.OnModelCreating(builder);
+        // Customize the ASP.NET Identity model and override the defaults if needed.
+        // For example, you can rename the ASP.NET Identity table names and more.
+        // Add your customizations after calling base.OnModelCreating(builder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder
+            .UseSqlServer();
+    }
+
+    
+
+    public DbSet<Insurance> Insurances { get; set; }
+
+    public DbSet<RateEnumType> RateEnumTypes { get; set; }
+
+    public DbSet<Rating> Ratings { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿
+using Data.DbContexts.AppDbContext;
 using Data.Entities;
-using Repositories.DbContexts.GenericDbContext;
 
 namespace Repositories.Repositories
 {

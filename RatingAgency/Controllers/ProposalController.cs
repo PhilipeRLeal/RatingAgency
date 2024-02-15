@@ -1,11 +1,12 @@
 ﻿using Business_Layer.Rules.ProposalManager;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RatingAgency.Responses;
 using ViewModels.ViewModels;
 
 namespace RatingAgency.Controllers
 {
-    
+    [Authorize]
     public class ProposalController : Controller
     {
 
