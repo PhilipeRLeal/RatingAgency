@@ -6,15 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 namespace Data.DbContexts.AppDbContext;
 
-public class AppDbContext : IdentityDbContext<CustomIdentityUser, 
-                                              CustomIdentityRole, 
-                                              int, 
-                                              CustomIdentityClaim, 
-                                              CustomIdentityUserRole,
-                                              CustomIdentityLogin, 
-                                              IdentityRoleClaim<int>, 
-                                              IdentityUserToken<int>
-                                              >
+public class AppDbContext : IdentityDbContext
 {
     
     public AppDbContext(DbContextOptions options) : base(options)
@@ -43,7 +35,11 @@ public class AppDbContext : IdentityDbContext<CustomIdentityUser,
 
     public DbSet<Insurance> Insurances { get; set; }
 
+    public DbSet<Proposal> Proposals { get; set; }
+
     public DbSet<RateEnumType> RateEnumTypes { get; set; }
 
     public DbSet<Rating> Ratings { get; set; }
+
+    
 }

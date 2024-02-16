@@ -1,101 +1,67 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RatingAgency.dependencyInjection;
-using RatingAgency.Validators.ControllerValidators;
-using Data.DbContexts.AppDbContext;
-using Data.DataBase.Initializer;
-using Data.DataBase.Identity;
-using Microsoft.AspNetCore.Identity;
 
+using Data.DataBase.Initializer;
+using Data.DbContexts.AppDbContext;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("AppDbContextConnection");
+var connectionString = builder.Configuration.GetConnectionString("AppDbContextConnection") ?? throw new InvalidOperationException("Connection string 'BethanysPieShopDbContextConnection' not found.");
 
-if (connectionString is null) {
-    throw new InvalidOperationException("Connection string 'AppDbContextConnection' not found.");
-};
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+;
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddDefaultUI()
+                .AddRoles<IdentityRole>()
+                .AddRoleManager<RoleManager<IdentityRole>>()
+                .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<AppDbContext>();
 
 builder.Services.AddControllersWithViews();
 
+RepositoriesAppBuilderManager.AddRepositories(builder);
 
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration["ConnectionStrings:DbContextConnection"]);
-});
-
-builder.Services.AddDefaultIdentity<CustomIdentityUser>(options => {
-    options.SignIn.RequireConfirmedAccount = false;
-
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = true;
-    options.User.RequireUniqueEmail = true;
-
-
-    })
-    .AddRoles<CustomIdentityRole>()
-    .AddRoleValidator<CustomRoleValidator>()
-    .AddRoleManager<CustomRoleManager>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddAuthentication();
-
-builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
 
-builder.Services.AddRazorComponents();
+builder.Services.AddDbContext<AppDbContext>(options => {
+    options.UseSqlServer(
+        builder.Configuration["ConnectionStrings:AppDbContextConnection"]);
+});
 
-builder.Services.Configure<MvcOptions>(x => x.Conventions.Add(new ModelStateValidatorConvension()));
-
-builder = DependencyInjector.Inject(builder);
-
+//builder.Services.AddDefaultIdentity<IdentityUser>()
+//.AddEntityFrameworkStores<BethanysPieShopDbContext>();
 
 var app = builder.Build();
 
-// Through this scope, we can access the services that were inserted into the builder prior to
-// the application being effectively run
-
-var dbServiceProvider = new DBSeedProvider(app);
-
-await dbServiceProvider.Seed();
-
-
-if (!app.Environment.IsDevelopment())
+//app.MapGet("/", () => "Hello World!");
+if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-
 }
-/*This middleware allows the solution to automatically include the static files like the bootstrap and css files.*/
+
 app.UseStaticFiles();
-// app.MapDefaultControllerRoute();
-app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapRazorPages();
-
-app.UseHttpsRedirection();
-
-app.UseRouting();
-
+app.UseSession();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
+//app.MapDefaultControllerRoute();
 
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapRazorPages();
+app.MapRazorPages();
+app.MapBlazorHub();
 
-    endpoints.MapControllerRoute(name: "default", pattern: "{controller}/{action}");
-});
+app.MapFallbackToPage("/app/{*catchall}", "/App/Index");
 
-
+var seeder = new DBSeedProvider(app);
+await seeder.Seed();
 
 app.Run();

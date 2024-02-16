@@ -1,4 +1,4 @@
-﻿using Data.DataBase.Identity;
+﻿using Data.DataBase.Identity.Factories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,16 +12,16 @@ namespace Data.DataBase.Initializer.appUsers.DefaultTypes
         public IServiceScope Scope { get; }
 
 
-        private RoleManager<CustomIdentityRole>? _RoleManager = default;
+        private RoleManager<IdentityRole>? _RoleManager = default;
 
 
-        private RoleManager<CustomIdentityRole> Manager
+        private RoleManager<IdentityRole> Manager
         {
             get
             {
                 if (_RoleManager == null)
                 {
-                    this._RoleManager = Scope.ServiceProvider.GetRequiredService<RoleManager<Identity.CustomIdentityRole>>();
+                    this._RoleManager = Scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 }
                 return _RoleManager;
             }
@@ -34,14 +34,14 @@ namespace Data.DataBase.Initializer.appUsers.DefaultTypes
         }
 
 
-        internal IEnumerable<CustomIdentityRole> Seed()
+        internal IEnumerable<IdentityRole> Seed()
         {
-            return CustomIdentityRoleFactory.Generate();
+            return IdentityRoleFactory.Generate();
         }
 
         public async Task CreateAsync()
         {
-            foreach (CustomIdentityRole role in Seed())
+            foreach (IdentityRole role in Seed())
             {
                 var exists = await this.Manager.RoleExistsAsync(role.Name);
 
@@ -50,6 +50,7 @@ namespace Data.DataBase.Initializer.appUsers.DefaultTypes
                     await this.Manager.CreateAsync(role);
                 }
             }
+
 
             this.Manager.Dispose();
         }

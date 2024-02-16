@@ -1,7 +1,7 @@
 ﻿
 namespace Data.Entities
 {
-    public class Proposal
+    public class Proposal: BaseEntity
     {
 
         public string Description { get; set; }

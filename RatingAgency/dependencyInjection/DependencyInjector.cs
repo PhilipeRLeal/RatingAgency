@@ -1,7 +1,11 @@
 ﻿using Business_Layer.Rules.ProposalManager;
 using Data.DataBase.Identity;
+using Data.Entities;
+using Data.Repositories;
 using Microsoft.AspNetCore.Identity;
+using NuGet.Protocol.Core.Types;
 using Repositories.Repositories;
+using ViewModels.ViewModels;
 
 namespace RatingAgency.dependencyInjection
 {
@@ -9,9 +13,8 @@ namespace RatingAgency.dependencyInjection
     {
         public static WebApplicationBuilder Inject(WebApplicationBuilder builder)
         {
-            InjectRepositories(builder);
 
-            InjectIdentityAndUserLayer(builder);
+            InjectRepositories(builder);
 
             InjectBusinessLayerTypes(builder);
 
@@ -20,14 +23,10 @@ namespace RatingAgency.dependencyInjection
             return builder;
         }
 
-        private static void InjectIdentityAndUserLayer(WebApplicationBuilder builder)
-        {
-          
-            builder.Services.AddScoped<UserManager<CustomIdentityUser>, CustomUserManager>();
-        }
 
         private static void InjectBusinessLayerTypes(WebApplicationBuilder builder)
         {
+            builder.Services.AddScoped<ProposalViewModel, ProposalViewModel>(); 
             builder.Services.AddScoped<IProposalManager, ProposalManager>();
         }
 
@@ -40,8 +39,9 @@ namespace RatingAgency.dependencyInjection
 
         private static void InjectRepositories(WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<InsuranceRepository, InsuranceRepository>();
-            builder.Services.AddScoped<RatingRepository, RatingRepository>();
+            builder.Services.AddScoped<IRepository<Proposal>, ProposalRepository>();
+            builder.Services.AddScoped<IRepository<Insurance>, InsuranceRepository>();
+            builder.Services.AddScoped<IRepository<Rating>, RatingRepository>();
         }
     }
 }

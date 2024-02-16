@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ComponentModel.DataAnnotations;
-using Data.DataBase.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,18 +12,14 @@ namespace RatingAgency.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        
+        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<CustomIdentityUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<IdentityUser> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
         }
-
-        #region Properties
-
-        private readonly SignInManager<CustomIdentityUser> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -82,8 +77,6 @@ namespace RatingAgency.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        #endregion Properties
-
         public async Task OnGetAsync(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
@@ -96,7 +89,7 @@ namespace RatingAgency.Areas.Identity.Pages.Account
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = ( await _signInManager.GetExternalAuthenticationSchemesAsync() ).ToList();
 
             ReturnUrl = returnUrl;
         }
@@ -105,24 +98,17 @@ namespace RatingAgency.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = ( await _signInManager.GetExternalAuthenticationSchemesAsync() ).ToList();
 
             if (ModelState.IsValid)
             {
-
-                CustomIdentityUser user = _signInManager.UserManager.Users.Where(u => u.Email == Input.Email).FirstOrDefault();
-
-                Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
-
-
-                result = await _signInManager.CheckPasswordSignInAsync(user, Input.Password,  false);
-
-                
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    _logger.LogInformation(User.Identity.IsAuthenticated.ToString());
-                    return RedirectToAction("Index", returnUrl);
+                    return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {

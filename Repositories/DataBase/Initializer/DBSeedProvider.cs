@@ -3,6 +3,7 @@ using Data.DataBase.Initializer.appUsers.UserSeedProvider;
 using Data.DbContexts.AppDbContext;
 using Data.Entities;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Data.DataBase.Initializer
@@ -18,6 +19,7 @@ namespace Data.DataBase.Initializer
         public DBSeedProvider(WebApplication app)
         {
             App = app;
+
         }
 
         private AppDbContext GetAppContext(IServiceScope scope)
@@ -38,6 +40,8 @@ namespace Data.DataBase.Initializer
 
         public async Task Seed()
         {
+            
+
             using (var scope = GetScope())
             {
                 AddDefaultRateTypes();
@@ -54,7 +58,6 @@ namespace Data.DataBase.Initializer
             }
         }
 
-        
 
         private async Task AddDefaultRoles()
         {
@@ -68,7 +71,9 @@ namespace Data.DataBase.Initializer
         private async Task AddDefaultUsers()
         {
             var userSeedProvider = new AppUserSeedProvider(this.Scope);
+
             await userSeedProvider.CreateAsync();
+
             this.AppContext.SaveChanges();
         }
 
@@ -80,9 +85,10 @@ namespace Data.DataBase.Initializer
                 AppContext.RateEnumTypes.Add(new RateEnumType { Name = "Low" });
                 AppContext.RateEnumTypes.Add(new RateEnumType { Name = "Medium" });
                 AppContext.RateEnumTypes.Add(new RateEnumType { Name = "High" });
+                AppContext.SaveChanges();
             }
 
-            AppContext.SaveChanges();
+            
         }
     }
 
